@@ -1,6 +1,6 @@
 {
     "name": "multer-minio-storage",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Multer MinIO Storage",
     "main": "index.js",
     "types": "index.d.ts",
@@ -26,7 +26,8 @@
     "dependencies": {
         "file-type": "^3.3.0",
         "is-svg": "^4.2.1",
-        "run-parallel": "^1.1.9"
+        "run-parallel": "^1.1.9",
+        "sharp": "^0.26.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.10.3",
