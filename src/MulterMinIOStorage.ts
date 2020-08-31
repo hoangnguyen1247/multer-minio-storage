@@ -90,12 +90,12 @@ function collect(storage, req, file, cb) {
 }
 
 function MinIOStorage(opts) {
-    switch (typeof opts.s3) {
+    switch (typeof opts.minioClient) {
         case 'object':
-            this.s3 = opts.s3;
+            this.minioClient = opts.minioClient;
             break;
         default:
-            throw new TypeError('Expected opts.s3 to be object');
+            throw new TypeError('Expected opts.minioClient to be object');
     }
 
     switch (typeof opts.bucket) {
@@ -272,15 +272,7 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
             params.ContentDisposition = opts.contentDisposition;
         }
 
-        const upload = this.s3.upload(params);
-
-        upload.on('httpUploadProgress', (ev) => {
-            if (ev.total) currentSize = ev.total;
-        });
-
-        upload.send((err, result) => {
-            if (err) return cb(err);
-
+        this.minioClient.putObject(params, (err, etag) => {
             cb(null, {
                 size: currentSize,
                 bucket: opts.bucket,
@@ -291,16 +283,16 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
                 storageClass: opts.storageClass,
                 serverSideEncryption: opts.serverSideEncryption,
                 metadata: opts.metadata,
-                location: result.Location,
-                etag: result.ETag,
-                versionId: result.VersionId,
-            });
+                // location: result.Location,
+                etag: etag,
+                // versionId: result.VersionId,
+            })
         });
     });
 };
 
 MinIOStorage.prototype._removeFile = function (req, file, cb) {
-    this.s3.deleteObject({ Bucket: file.bucket, Key: file.key }, cb);
+    this.minioClient.removeObject(file.bucket, file.key, cb);
 };
 
 export default function (opts) {
