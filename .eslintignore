@@ -1,0 +1,6 @@
+**/node_modules
+/lib
+
+
+index.js
+babel.config.js

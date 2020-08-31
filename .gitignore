@@ -1,0 +1,23 @@
+
+# IDEs and editors
+.idea/
+.vscode/others
+
+# dependencies
+node_modules/
+
+# dist
+build/
+
+# log
+log/
+
+# misc
+tmp/
+temp/
+
+src/**/*.js
+src/**/*.js.map
+
+yarn.lock
+yarn-error.log

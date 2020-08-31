@@ -1,0 +1,9 @@
+
+# Dependencies
+node_modules
+
+# Source
+/src
+
+# Test
+/test
