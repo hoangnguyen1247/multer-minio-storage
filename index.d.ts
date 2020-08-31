@@ -14,7 +14,7 @@ interface Options {
 
 declare global {
     namespace Express {
-        namespace MulterS3 {
+        namespace MulterMinIOStorage {
             interface File extends Multer.File {
                 bucket: string;
                 key: string;
