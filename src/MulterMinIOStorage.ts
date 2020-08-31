@@ -278,8 +278,8 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
         const sharpStream = sharp();
         const thumbStream = new stream.PassThrough();
         const featuredStream = new stream.PassThrough();
-        sharpStream.clone().resize(320, 320).pipe(thumbStream);
-        sharpStream.clone().resize(320, 180).pipe(featuredStream);
+        sharpStream.clone().resize(320, 320, { fit: sharp.fit.cover }).pipe(thumbStream);
+        sharpStream.clone().resize(320, 180, { fit: sharp.fit.cover }).pipe(featuredStream);
         file.stream.pipe(sharpStream);
 
         if (opts.shouldCreateThumbnail) {
