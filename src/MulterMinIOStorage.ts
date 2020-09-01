@@ -3,6 +3,9 @@ import stream from 'stream';
 import fileType from 'file-type';
 import isSvg from 'is-svg';
 import parallel from 'run-parallel';
+import sharp from 'sharp';
+
+import { parseFileKey } from './utils/parse-filekey';
 
 function staticValue(value) {
     return function (req, file, cb) {
@@ -253,7 +256,7 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
     collect(this, req, file, function (err, opts) {
         if (err) return cb(err);
 
-        let currentSize = 0;
+        const currentSize = 0;
 
         const params: any = {
             Bucket: opts.bucket,
@@ -272,27 +275,113 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
             params.ContentDisposition = opts.contentDisposition;
         }
 
-        this.minioClient.putObject(params, (err, etag) => {
-            cb(null, {
-                size: currentSize,
-                bucket: opts.bucket,
-                key: opts.key,
-                acl: opts.acl,
-                contentType: opts.contentType,
-                contentDisposition: opts.contentDisposition,
-                storageClass: opts.storageClass,
-                serverSideEncryption: opts.serverSideEncryption,
-                metadata: opts.metadata,
-                // location: result.Location,
-                etag: etag,
-                // versionId: result.VersionId,
-            })
-        });
+        const sharpStream = sharp();
+        const thumbStream = new stream.PassThrough();
+        const featuredStream = new stream.PassThrough();
+        sharpStream
+            .clone()
+            .resize(320, 320, { fit: sharp.fit.cover })
+            .pipe(thumbStream);
+        sharpStream
+            .clone()
+            .resize(320, 180, { fit: sharp.fit.cover })
+            .pipe(featuredStream);
+        file.stream.pipe(sharpStream);
+
+        if (opts.shouldCreateThumbnail) {
+            this.minioClient.putObject(
+                opts.bucket,
+                parseFileKey(opts.key, '-thumb'),
+                thumbStream,
+                (err, etag) => {
+                    if (err) cb(err);
+                    else {
+                        cb(null, {
+                            size: currentSize,
+                            bucket: opts.bucket,
+                            key: opts.key,
+                            acl: opts.acl,
+                            contentType: opts.contentType,
+                            contentDisposition: opts.contentDisposition,
+                            storageClass: opts.storageClass,
+                            serverSideEncryption: opts.serverSideEncryption,
+                            metadata: opts.metadata,
+                            // location: result.Location,
+                            etag: etag,
+                            // versionId: result.VersionId,
+                        });
+                    }
+                }
+            );
+        }
+
+        if (opts.shouldCreateFeatured) {
+            this.minioClient.putObject(
+                opts.bucket,
+                parseFileKey(opts.key, '-featured'),
+                featuredStream,
+                (err, etag) => {
+                    if (err) cb(err);
+                    else {
+                        cb(null, {
+                            size: currentSize,
+                            bucket: opts.bucket,
+                            key: opts.key,
+                            acl: opts.acl,
+                            contentType: opts.contentType,
+                            contentDisposition: opts.contentDisposition,
+                            storageClass: opts.storageClass,
+                            serverSideEncryption: opts.serverSideEncryption,
+                            metadata: opts.metadata,
+                            // location: result.Location,
+                            etag: etag,
+                            // versionId: result.VersionId,
+                        });
+                    }
+                }
+            );
+        }
+
+        this.minioClient.putObject(
+            opts.bucket,
+            opts.key,
+            file.stream,
+            file.size,
+            (err, etag) => {
+                if (err) cb(err);
+                else {
+                    cb(null, {
+                        size: currentSize,
+                        bucket: opts.bucket,
+                        key: opts.key,
+                        acl: opts.acl,
+                        contentType: opts.contentType,
+                        contentDisposition: opts.contentDisposition,
+                        storageClass: opts.storageClass,
+                        serverSideEncryption: opts.serverSideEncryption,
+                        metadata: opts.metadata,
+                        // location: result.Location,
+                        etag: etag,
+                        // versionId: result.VersionId,
+                    });
+                }
+            }
+        );
     });
 };
 
 MinIOStorage.prototype._removeFile = function (req, file, cb) {
     this.minioClient.removeObject(file.bucket, file.key, cb);
+    this.minioClient.removeObject(
+        file.bucket,
+        parseFileKey(file.key, '-thumb'),
+        cb
+    );
+    this.minioClient.removeObject(
+        file.bucket,
+        parseFileKey(file.key, '-featured'),
+        cb
+    );
 };
 
 export default function (opts) {
