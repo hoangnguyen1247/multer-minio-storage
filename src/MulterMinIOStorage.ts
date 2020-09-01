@@ -278,8 +278,14 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
         const sharpStream = sharp();
         const thumbStream = new stream.PassThrough();
         const featuredStream = new stream.PassThrough();
-        sharpStream.clone().resize(320, 320, { fit: sharp.fit.cover }).pipe(thumbStream);
-        sharpStream.clone().resize(320, 180, { fit: sharp.fit.cover }).pipe(featuredStream);
+        sharpStream
+            .clone()
+            .resize(320, 320, { fit: sharp.fit.cover })
+            .pipe(thumbStream);
+        sharpStream
+            .clone()
+            .resize(320, 180, { fit: sharp.fit.cover })
+            .pipe(featuredStream);
         file.stream.pipe(sharpStream);
 
         if (opts.shouldCreateThumbnail) {
@@ -288,20 +294,23 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
                 parseFileKey(opts.key, '-thumb'),
                 thumbStream,
                 (err, etag) => {
-                    cb(null, {
-                        size: currentSize,
-                        bucket: opts.bucket,
-                        key: opts.key,
-                        acl: opts.acl,
-                        contentType: opts.contentType,
-                        contentDisposition: opts.contentDisposition,
-                        storageClass: opts.storageClass,
-                        serverSideEncryption: opts.serverSideEncryption,
-                        metadata: opts.metadata,
-                        // location: result.Location,
-                        etag: etag,
-                        // versionId: result.VersionId,
-                    });
+                    if (err) cb(err);
+                    else {
+                        cb(null, {
+                            size: currentSize,
+                            bucket: opts.bucket,
+                            key: opts.key,
+                            acl: opts.acl,
+                            contentType: opts.contentType,
+                            contentDisposition: opts.contentDisposition,
+                            storageClass: opts.storageClass,
+                            serverSideEncryption: opts.serverSideEncryption,
+                            metadata: opts.metadata,
+                            // location: result.Location,
+                            etag: etag,
+                            // versionId: result.VersionId,
+                        });
+                    }
                 }
             );
         }
@@ -312,6 +321,35 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
                 parseFileKey(opts.key, '-featured'),
                 featuredStream,
                 (err, etag) => {
+                    if (err) cb(err);
+                    else {
+                        cb(null, {
+                            size: currentSize,
+                            bucket: opts.bucket,
+                            key: opts.key,
+                            acl: opts.acl,
+                            contentType: opts.contentType,
+                            contentDisposition: opts.contentDisposition,
+                            storageClass: opts.storageClass,
+                            serverSideEncryption: opts.serverSideEncryption,
+                            metadata: opts.metadata,
+                            // location: result.Location,
+                            etag: etag,
+                            // versionId: result.VersionId,
+                        });
+                    }
+                }
+            );
+        }
+
+        this.minioClient.putObject(
+            opts.bucket,
+            opts.key,
+            file.stream,
+            file.size,
+            (err, etag) => {
+                if (err) cb(err);
+                else {
                     cb(null, {
                         size: currentSize,
                         bucket: opts.bucket,
@@ -327,29 +365,6 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
                         // versionId: result.VersionId,
                     });
                 }
-            );
-        }
-
-        this.minioClient.putObject(
-            opts.bucket,
-            opts.key,
-            file.stream,
-            file.size,
-            (err, etag) => {
-                cb(null, {
-                    size: currentSize,
-                    bucket: opts.bucket,
-                    key: opts.key,
-                    acl: opts.acl,
-                    contentType: opts.contentType,
-                    contentDisposition: opts.contentDisposition,
-                    storageClass: opts.storageClass,
-                    serverSideEncryption: opts.serverSideEncryption,
-                    metadata: opts.metadata,
-                    // location: result.Location,
-                    etag: etag,
-                    // versionId: result.VersionId,
-                });
             }
         );
     });
