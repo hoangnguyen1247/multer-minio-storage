@@ -1,6 +1,6 @@
 {
     "name": "multer-minio-storage",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Multer MinIO Storage",
     "main": "index.js",
     "types": "index.d.ts",
