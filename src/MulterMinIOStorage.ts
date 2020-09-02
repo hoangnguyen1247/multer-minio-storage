@@ -63,6 +63,7 @@ function collect(storage, req, file, cb) {
             storage.getStorageClass.bind(storage, req, file),
             storage.getSSE.bind(storage, req, file),
             storage.getSSEKMS.bind(storage, req, file),
+            storage.getShouldCreateThumbnail.bind(storage, req, file),
         ],
         (err, values) => {
             if (err) return cb(err);
@@ -85,6 +86,7 @@ function collect(storage, req, file, cb) {
                         replacementStream: replacementStream,
                         serverSideEncryption: values[7],
                         sseKmsKeyId: values[8],
+                        shouldCreateThumbnail: values[9],
                     });
                 }
             );
@@ -248,6 +250,22 @@ function MinIOStorage(opts) {
         default:
             throw new TypeError(
                 'Expected opts.sseKmsKeyId to be undefined, string, or function'
+            );
+    }
+
+    switch (typeof opts.shouldCreateThumbnail) {
+        case 'function':
+            this.getShouldCreateThumbnail = opts.shouldCreateThumbnail;
+            break;
+        case 'string':
+            this.getShouldCreateThumbnail = staticValue(opts.shouldCreateThumbnail);
+            break;
+        case 'undefined':
+            this.getShouldCreateThumbnail = false;
+            break;
+        default:
+            throw new TypeError(
+                'Expected opts.shouldCreateThumbnail to be undefined, string, or function'
             );
     }
 }
