@@ -64,6 +64,7 @@ function collect(storage, req, file, cb) {
             storage.getSSE.bind(storage, req, file),
             storage.getSSEKMS.bind(storage, req, file),
             storage.getShouldCreateThumbnail.bind(storage, req, file),
+            storage.getShouldCreateFeatured.bind(storage, req, file),
         ],
         (err, values) => {
             if (err) return cb(err);
@@ -87,6 +88,7 @@ function collect(storage, req, file, cb) {
                         serverSideEncryption: values[7],
                         sseKmsKeyId: values[8],
                         shouldCreateThumbnail: values[9],
+                        shouldCreateFeatured: values[10],
                     });
                 }
             );
@@ -265,7 +267,23 @@ function MinIOStorage(opts) {
             break;
         default:
             throw new TypeError(
-                'Expected opts.shouldCreateThumbnail to be undefined, string, or function'
+                'Expected opts.shouldCreateThumbnail to be undefined, boolean, or function'
+            );
+    }
+
+    switch (typeof opts.shouldCreateFeatured) {
+        case 'function':
+            this.getShouldCreateFeatured = opts.shouldCreateFeatured;
+            break;
+        case 'boolean':
+            this.getShouldCreateFeatured = staticValue(opts.shouldCreateFeatured);
+            break;
+        case 'undefined':
+            this.getShouldCreateFeatured = false;
+            break;
+        default:
+            throw new TypeError(
+                'Expected opts.shouldCreateFeatured to be undefined, boolean, or function'
             );
     }
 }

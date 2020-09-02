@@ -11,6 +11,7 @@ interface Options {
     cacheControl?: ((req: Express.Request, file: Express.Multer.File, callback: (error: any, cacheControl?: string) => void) => void) | string;
     serverSideEncryption?: ((req: Express.Request, file: Express.Multer.File, callback: (error: any, serverSideEncryption?: string) => void) => void) | string;
     shouldCreateThumnail?: boolean,
+    shouldCreateFeatured?: boolean,
 }
 
 declare global {
