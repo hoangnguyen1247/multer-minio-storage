@@ -257,7 +257,7 @@ function MinIOStorage(opts) {
         case 'function':
             this.getShouldCreateThumbnail = opts.shouldCreateThumbnail;
             break;
-        case 'string':
+        case 'boolean':
             this.getShouldCreateThumbnail = staticValue(opts.shouldCreateThumbnail);
             break;
         case 'undefined':
