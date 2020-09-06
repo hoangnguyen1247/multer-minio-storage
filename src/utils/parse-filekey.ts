@@ -1,5 +1,5 @@
 import path from 'path';
 
-export function parseFileKey(fileKey, pad) {
-    return `${path.basename(fileKey, path.extname(fileKey))}${pad}${path.extname(fileKey)}`;
+export function parseFileKey(f, pad, delimeter = "-") {
+    return path.dirname(f) + "/" + path.basename(f, path.extname(f)) + delimeter + pad + path.extname(f.toLowerCase());
 }

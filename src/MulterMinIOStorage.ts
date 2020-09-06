@@ -329,7 +329,7 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
         if (opts.shouldCreateThumbnail) {
             this.minioClient.putObject(
                 opts.bucket,
-                parseFileKey(opts.key, '-thumb'),
+                parseFileKey(opts.key, 'thumb'),
                 thumbStream,
                 (err, etag) => {
                     if (err) cb(err);
@@ -356,7 +356,7 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
         if (opts.shouldCreateFeatured) {
             this.minioClient.putObject(
                 opts.bucket,
-                parseFileKey(opts.key, '-featured'),
+                parseFileKey(opts.key, 'featured'),
                 featuredStream,
                 (err, etag) => {
                     if (err) cb(err);
