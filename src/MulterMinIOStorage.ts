@@ -22,6 +22,8 @@ const defaultContentDisposition = staticValue(null);
 const defaultStorageClass = staticValue('STANDARD');
 const defaultSSE = staticValue(null);
 const defaultSSEKMS = staticValue(null);
+const defaultShouldCreateThumbnail = staticValue(null);
+const defaultShouldCreateFeatured = staticValue(null);
 
 function defaultKey(req, file, cb) {
     crypto.randomBytes(16, (err, raw) => {
@@ -263,7 +265,7 @@ function MinIOStorage(opts) {
             this.getShouldCreateThumbnail = staticValue(opts.shouldCreateThumbnail);
             break;
         case 'undefined':
-            this.getShouldCreateThumbnail = false;
+            this.getShouldCreateThumbnail = defaultShouldCreateThumbnail;
             break;
         default:
             throw new TypeError(
@@ -279,7 +281,7 @@ function MinIOStorage(opts) {
             this.getShouldCreateFeatured = staticValue(opts.shouldCreateFeatured);
             break;
         case 'undefined':
-            this.getShouldCreateFeatured = false;
+            this.getShouldCreateFeatured = defaultShouldCreateFeatured;
             break;
         default:
             throw new TypeError(
