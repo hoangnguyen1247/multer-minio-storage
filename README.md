@@ -16,14 +16,14 @@ npm install --save multer-minio-storage
 var minio = require('minio')
 var express = require('express')
 var multer = require('multer')
-var multerMinioStorage = require('multer-minio-storage')
+var multerMinIOStorage = require('multer-minio-storage')
 
 var app = express()
-var minioCient = new minio.Client({ /* ... */ })
+var minioClient = new minio.Client({ /* ... */ })
 
 var upload = multer({
-  storage: multerMinioStorage({
-    minioCient: minioCient,
+  storage: multerMinIOStorage({
+    minioClient: minioClient,
     bucket: 'some-bucket',
     metadata: function (req, file, cb) {
       cb(null, {fieldName: file.fieldname});
