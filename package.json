@@ -54,6 +54,7 @@
         "chai-as-promised": "^7.1.1",
         "concat-stream": "^2.0.0",
         "cross-env": "^7.0.2",
+        "eslint": "^8.8.0",
         "form-data": "^3.0.0",
         "jest": "^27.4.7",
         "minio": "^7.0.16",
