@@ -1,6 +1,6 @@
 # Multer MinIO Storage
 
-Streaming multer storage engine for MinIO.
+Multer storage for MinIO.
 
 This project is inspired from [Multer S3](https://github.com/badunk/multer-s3)
 
