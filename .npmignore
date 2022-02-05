@@ -6,4 +6,4 @@ node_modules
 /src
 
 # Test
-/test
+/lib/__test__
