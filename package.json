@@ -37,6 +37,7 @@
         "@babel/preset-env": "^7.10.3",
         "@babel/preset-typescript": "^7.10.1",
         "@babel/runtime": "^7.11.2",
+        "@commitlint/config-conventional": "^16.0.0",
         "@semantic-release/github": "^8.0.2",
         "@semantic-release/npm": "^9.0.0",
         "@types/express": "^4.17.7",
@@ -48,11 +49,14 @@
         "@typescript-eslint/parser": "^5.10.2",
         "babel-plugin-module-resolver": "^4.0.0",
         "babel-preset-minify": "^0.5.1",
+        "commitlint": "^16.1.0",
         "concat-stream": "^2.0.0",
         "cross-env": "^7.0.2",
         "eslint": "^8.8.0",
         "form-data": "^3.0.0",
+        "husky": "^7.0.4",
         "jest": "^27.4.7",
+        "lint-staged": "^12.3.3",
         "minio": "^7.0.16",
         "multer": "^1.4.2",
         "on-finished": "^2.3.0",
@@ -63,21 +67,27 @@
         "typescript": "^3.9.5",
         "xtend": "^4.0.2"
     },
+    "engines": {
+        "node": ">=10"
+    },
+    "lint-staged": {
+        "*.@(ts|tsx)": [
+            "eslint --cache"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+            "pre-commit": "lint-staged && yarn type-check && yarn test"
+        }
+    },
     "scripts": {
         "clean:build": "rimraf lib",
-        "type-check": "cross-env NODE_PATH=. tsc --noEmit",
-        "type-check:watch": "npm run type-check -- --watch",
         "build": "npm run clean:build && npm run type-check && npm run build:js",
         "build:types": "tsc --emitDeclarationOnly",
         "build:js": "cross-env NODE_PATH=. tsc -p tsconfig-build.json",
         "lint": "eslint src/** --ext=js,ts",
-        "test:mocha": "cross-env NODE_PATH=. ts-mocha src/__test__/test.ts --timeout=60000 --exit",
+        "type-check": "tsc --noEmit",
         "test": "jest --testTimeout=10000"
-    },
-    "prettier": {
-        "singleQuote": true
-    },
-    "engines": {
-        "node": ">=10"
     }
 }
