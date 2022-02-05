@@ -34,7 +34,7 @@ var upload = multer({
   })
 })
 
-app.post('/upload', upload.single('file', 3), function(req, res, next) {
+app.post('/upload', upload.single('file'), function(req, res, next) {
   res.send('Successfully uploaded ' + req.file.originalname);
 })
 
