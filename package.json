@@ -37,6 +37,8 @@
         "@babel/preset-env": "^7.10.3",
         "@babel/preset-typescript": "^7.10.1",
         "@babel/runtime": "^7.11.2",
+        "@semantic-release/github": "^8.0.2",
+        "@semantic-release/npm": "^9.0.0",
         "@types/chai": "^4.2.11",
         "@types/express": "^4.17.7",
         "@types/jest": "^27.4.0",
@@ -60,6 +62,7 @@
         "on-finished": "^2.3.0",
         "prettier": "^2.1.1",
         "rimraf": "^3.0.2",
+        "semantic-release": "^19.0.2",
         "ts-mocha": "^7.0.0",
         "typescript": "^3.9.5",
         "xtend": "^4.0.2"
