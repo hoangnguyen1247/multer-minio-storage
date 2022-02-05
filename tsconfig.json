@@ -1,7 +1,7 @@
 {
     "version": "2.4.2",
     "compilerOptions": {
-        "baseUrl": ".",
+        "baseUrl": "src",
         "target": "es2016",
         "module": "commonjs",
         "lib": [
@@ -35,12 +35,9 @@
     },
     "include": [
         "src/*.ts",
-        "src/**/*.ts",
-        "test",
-        "types"
+        "src/**/*.ts"
     ],
     "exclude": [
-        "node_modules",
-        "test/**/*.test.ts",
+        "node_modules"
     ]
 }
