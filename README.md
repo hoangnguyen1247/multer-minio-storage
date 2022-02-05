@@ -206,6 +206,25 @@ var upload = multer({
 })
 ```
 
+## Create a thumbnail
+
+If the optional `shouldCreateThumbnail` option is `true`, a thumbnail 320x320 will be created and upload to minio in same place.
+
+```javascript
+var opts = {
+    minioClient: minioClient,
+    bucket: config.originalsBucket,
+    metadata: function (req, file, cb) {
+      cb(null, Object.assign({}, req.body));
+    },
+    key: function (req, file, cb) {
+      cb(null, req.params.id + ".jpg");
+    },
+    shouldCreateThumbnail: true,
+  };
+```
+
+
 ## Testing
 
 The tests mock all access to S3 and can be run completely offline.
