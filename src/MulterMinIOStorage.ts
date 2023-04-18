@@ -399,6 +399,7 @@ MinIOStorage.prototype._handleFile = function (req, file, cb) {
             opts.key,
             mainStream,
             file.size,
+            { "Content-Type": params.ContentType },
             (err, result) => {
                 if (err) cb(err);
                 else {
